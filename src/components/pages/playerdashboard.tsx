@@ -19,35 +19,8 @@ export default function CricketDashboard() {
     { name: "Team4", matches: 0, wins: 0, losses: 0, nrr: "0.00", points: 0 },
   ];
 
-  const matches = [
-    {
-      date: "2025-03-30",
-      time: "18:00",
-      team1: "Team1",
-      team2: "Team2",
-      stage: "Qualifiers",
-      location: "Stadium A",
-    },
-    {
-      date: "2025-04-01",
-      time: "18:00",
-      team1: "Team3",
-      team2: "Team4",
-      stage: "Group Stage",
-      location: "Stadium B",
-    },
-    {
-      date: "2025-04-04",
-      time: "15:00",
-      team1: "Team1",
-      team2: "Team3",
-      stage: "Semi Final",
-      location: "Stadium C",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-black text-white px-6 py-6">
+    <div className="min-h-screen bg-black text-white px-20 py-6">
       {/* Header */}
       <div className="flex justify-between items-center pb-4 border-b border-gray-700 mb-4">
         <div>
@@ -169,8 +142,8 @@ export default function CricketDashboard() {
               ))}
               {/* Button row */}
               <TableRow>
-                <TableCell colSpan={8} className="text-center pt-4">
-                  <Button className="bg-white border-2 border-gray-500 text-black rounded-md px-6 py-2">
+              <TableCell colSpan={8} className="text-center pt-4 border-t border-gray-700">
+                  <Button className="bg-white border-2 border-gray-500 text-black rounded-md px-6 py-2 hover:bg-white hover:text-black hover:border-gray-700">
                     View complete table
                   </Button>
                 </TableCell>
