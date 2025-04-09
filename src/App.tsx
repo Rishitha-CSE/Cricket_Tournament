@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-route
 import { useEffect } from "react";
 import LoginAndRegisterPage from "@/components/pages/loginAndregister";
 import CricketDashboard from "./components/pages/playerdashboard";
+import TournamentRegistration from "./components/pages/tournamentregistration";
+import TeamRegistrationForm from "./components/pages/teamregistration";
 
 function App() {
   return (
@@ -10,6 +12,8 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginAndRegisterPage />} />
         <Route path="/playerdashboard"element={<CricketDashboard/>}/>
+        <Route path="/tournamentregistration"element={<TournamentRegistration/>}/>
+        <Route path="/teamregistration"element={<TeamRegistrationForm/>}/>
       </Routes>
     </Router>
   );

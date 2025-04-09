@@ -1,4 +1,6 @@
 "use client";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -12,6 +14,10 @@ import {
 import { LogOut } from "lucide-react";
 
 export default function CricketDashboard() {
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const teams = [
     { name: "Team1", matches: 0, wins: 0, losses: 0, nrr: "0.00", points: 0 },
     { name: "Team2", matches: 0, wins: 0, losses: 0, nrr: "0.00", points: 0 },
@@ -19,69 +25,86 @@ export default function CricketDashboard() {
     { name: "Team4", matches: 0, wins: 0, losses: 0, nrr: "0.00", points: 0 },
   ];
 
-  const matches = [
-    {
-      date: "2025-03-30",
-      time: "18:00",
-      team1: "Team1",
-      team2: "Team2",
-      stage: "Qualifiers",
-      location: "Stadium A",
-    },
-    {
-      date: "2025-04-01",
-      time: "18:00",
-      team1: "Team3",
-      team2: "Team4",
-      stage: "Group Stage",
-      location: "Stadium B",
-    },
-    {
-      date: "2025-04-04",
-      time: "15:00",
-      team1: "Team1",
-      team2: "Team3",
-      stage: "Semi Final",
-      location: "Stadium C",
-    },
-  ];
+  const handleLogout = async () => {
+    try {
+      const accessToken = localStorage.getItem("access_token");
+  
+      const res = await fetch("http://localhost:3001/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: accessToken }), // send access token only
+      });
+  
+      if (res.ok) {
+        // Clear token from storage
+        localStorage.removeItem("access_token");
+  
+        setSuccess("Logged out successfully.");
+        setTimeout(() => {
+          navigate("/"); 
+        }, 1000);
+      } else {
+        const data = await res.json();
+        setError(data.message || "Logout failed.");
+      }
+    } catch (err) {
+      setError("Something went wrong during logout.");
+    }
+  };  
+
+  // Auto-clear messages
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(""), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => setSuccess(""), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   return (
-    <div className="min-h-screen bg-black text-white px-6 py-6">
+    <div className="min-h-screen bg-black text-white px-20 py-6">
       {/* Header */}
       <div className="flex justify-between items-center pb-4 border-b border-gray-700 mb-4">
         <div>
           <h1 className="text-2xl font-bold">CricketTMS</h1>
           <p className="text-gray-400 text-sm">Organize. Play. Win</p>
         </div>
-        <Button className="px-3 py-1 rounded-md hover:bg-gray-400 bg-white text-black flex items-center gap-2">
+        <Button
+          onClick={handleLogout}
+          className="px-3 py-1 rounded-md hover:bg-gray-400 bg-white text-black flex items-center gap-2"
+        >
           <LogOut className="w-4 h-4" />
           <span className="text-sm">Log out</span>
         </Button>
       </div>
 
       {/* Dashboard Section */}
-      <section className="mt-16 mb-32">
-        <div className="flex justify-between items-center mb-8">
+      <section className="mt-14 mb-30">
+        <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-lg font-semibold">Dashboard</h2>
             <p className="text-gray-400 text-sm">Manage your cricket tournament</p>
           </div>
           <Button className="flex items-center gap-2 px-3 py-1 rounded-md bg-white text-black border border-gray-300 hover:bg-gray-300">
-            <span className="w-6 h-6 flex items-center justify-center border border-black rounded-full text-black font-bold text-xl leading-none">
+            <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center text-center border border-black rounded-full text-black font-bold text-lg">
               +
             </span>
-            <span className="text-sm">Join In Team</span>
+            <span className="text-sm">Join in Team</span>
           </Button>
         </div>
 
         {/* Dashboard Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { title: "Team", count: 0, text: "Join in team to see no. of players" },
-            { title: "Total Players", count: 0, text: "Join in team to see no. of players" },
-            { title: "Total Players", count: 0, text: "Join in team to see no. of players" },
-            { title: "Total Players", count: 0, text: "Join in team to see no. of players" },
+            { title: "Team", count: 0, text: "Join in team" },
           ].map((card, index) => (
             <Card key={index} className="bg-black border border-gray-700 text-white w-full h-40 p-8">
               <CardContent className="flex flex-col items-center justify-center text-center h-full">
@@ -95,9 +118,9 @@ export default function CricketDashboard() {
       </section>
 
       {/* Upcoming Matches */}
-      <section className="mb-14">
-        <h2 className="text-2xl font-semibold">Upcoming Matches</h2>
-        <div className="grid grid-cols-3 gap-4 mt-4">
+      <section>
+        <h2 className="text-2xl font-semibold mt-24">Upcoming Matches</h2>
+        <div className="grid grid-cols-3 gap-4 mt-6">
           {[ 
             { date: "2025-03-30", time: "16:00", stadium: "M. Chinnaswamy Stadium" },
             { date: "2025-04-04", time: "15:00", stadium: "Arun Jaitley Stadium" }
@@ -169,8 +192,8 @@ export default function CricketDashboard() {
               ))}
               {/* Button row */}
               <TableRow>
-                <TableCell colSpan={8} className="text-center pt-4">
-                  <Button className="bg-white border-2 border-gray-500 text-black rounded-md px-6 py-2">
+                <TableCell colSpan={8} className="text-center pt-4 border-t border-gray-700">
+                  <Button className="bg-white border-2 border-gray-500 text-black rounded-md px-6 py-2 hover:bg-white hover:text-black hover:border-gray-700">
                     View complete table
                   </Button>
                 </TableCell>
